@@ -1,0 +1,163 @@
+-- wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+-- sequence 설계
+DROP SEQUENCE customerID_seq;
+DROP SEQUENCE alarmID_seq;
+DROP SEQUENCE textID_seq;
+DROP SEQUENCE boardID_seq;
+DROP SEQUENCE sessionID_seq;
+
+CREATE SEQUENCE customerID_seq START WITH 1 INCREMENT BY 1 MAXVALUE 10000;
+CREATE SEQUENCE alarmID_seq START WITH 1 INCREMENT BY 1 MAXVALUE 10000;
+CREATE SEQUENCE textID_seq START WITH 1 INCREMENT BY 1 MAXVALUE 10000;
+CREATE SEQUENCE boardID_seq START WITH 1 INCREMENT BY 1 MAXVALUE 10000;
+CREATE SEQUENCE sessionID_seq START WITH 1 INCREMENT BY 1 MAXVALUE 10000;
+-- wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+
+-- wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+-- customer 테이블 설계
+DROP TABLE customer;
+
+CREATE TABLE customer 
+(customerID VARCHAR2(60) PRIMARY KEY, passwd VARCHAR2(60), name VARCHAR2(100), gender VARCHAR2(10),
+    birthday VARCHAR2(20), phone VARCHAR2(20), star VARCHAR2(50), starGrade VARCHAR2(20),
+    customerClassification VARCHAR2(20), address CLOB, email VARCHAR2(100),
+    regDate VARCHAR2(50), job VARCHAR2(100), boardLike VARCHAR2(100));
+-- wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+
+
+-- wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+-- alarm 테이블 설계
+DROP TABLE alarm;
+
+CREATE TABLE alarm
+(alarmID VARCHAR2(60) PRIMARY KEY, customerID VARCHAR2(60), sendCustomerID VARCHAR2(60),
+    boardID VARCHAR2(60), alarmTitle VARCHAR2(100), alarmContent CLOB,
+    alarmDate VARCHAR2(50), alarmCheck VARCHAR2(10), alarmCheckDate VARCHAR2(50));
+-- wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+
+-- wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+-- openText 테이블 설계
+DROP TABLE openText;
+
+CREATE TABLE openText
+(textID VARCHAR2(60) PRIMARY KEY, customerID VARCHAR2(60), customerSecret VARCHAR2(10),
+    textContent CLOB, textDate VARCHAR2(50));
+-- wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+
+-- wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+-- board 테이블 설계
+
+DROP TABLE board;
+
+CREATE TABLE board
+(boardID VARCHAR2(60) PRIMARY KEY, customerID VARCHAR2(60), language VARCHAR2(10),
+    boardType VARCHAR2(60), postingStar VARCHAR2(20), boardContent CLOB,
+    fname VARCHAR2(100), fsize VARCHAR2(50), uploadDate VARCHAR2(50),
+    boardSelect VARCHAR2(10), boardTitle VARCHAR2(100), boardCount VARCHAR2(20),
+    boardLike VARCHAR2(20), boardSecret VARCHAR2(10), boardClassification VARCHAR2(20));
+-- wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+
+-- wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+DROP TABLE log;
+
+CREATE TABLE log
+(sessionID VARCHAR2(60) PRIMARY KEY, sessionRegDate VARCHAR2(50), sessionExpireDate VARCHAR2(50),
+    visitPage VARCHAR2(10), typingCount VARCHAR2(20), customerID VARCHAR2(60));
+-- wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+
+COMMIT;
+-- wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+
+-- 0910 추가 primary key 지정 
+--- TEST (관리자, 일반회원 정보 입력)
+delete from CUSTOMER;
+
+INSERT INTO CUSTOMER VALUES('kopago','kopago123','이름1','male','19970628','010-111-9222', '0','기본등급','일반회원','서울 금천구 월드메르디앙','kostep@naver.com','2019-09-09','학생','1');
+INSERT INTO CUSTOMER VALUES('admin','admin123','관리자','male','19970628','010-131-9222', '0','기본등급','관리자','인천 연수구 월드메르디앙','kostep2@naver.com','2019-09-29','기타','0');
+SELECT * from CUSTOMER;
+
+-- 0913 
+-- TEST (게시판 목록 보기용)
+delete from BOARD;
+
+INSERT INTO BOARD VALUES('A_B','kopago','ke','공개','제목1','내용1','fname','fsize','2021-09-13','3','진짜 제목','10','6','공개','test');
+select * from board;
+
+-- 0915 고객 테이블 & 보드 테이블 더미데이터 생성 (테이블 명, LEVEL만 바꿔주면 됩니다)
+-- TEST
+
+/*======================== CUSTOMER 테이블 더미 ================*/
+DROP TABLE customerDUMMY;
+CREATE TABLE customerDUMMY 
+(customerID VARCHAR2(60) PRIMARY KEY, passwd VARCHAR2(60), name VARCHAR2(100), gender VARCHAR2(10),
+    birthday VARCHAR2(20), phone VARCHAR2(20), star VARCHAR2(50), starGrade VARCHAR2(20),
+    customerClassification VARCHAR2(20), address CLOB, email VARCHAR2(100),
+    regDate VARCHAR2(50), job VARCHAR2(100), boardLike VARCHAR2(100)
+);
+
+DELETE FROM customerDUMMY;
+insert into customerDUMMY 
+    SELECT
+        DBMS_RANDOM.STRING('L',5) AS customerID,
+        DBMS_RANDOM.STRING('L',5) AS passwd,
+        DBMS_RANDOM.STRING('L',5) AS name,
+        decode(round(dbms_random.value), 1, 'female', 'male') AS gender,
+        LPAD (ROUND (DBMS_RANDOM.VALUE (10000000,99999999),0),8) AS birthday,
+        LPAD (ROUND (DBMS_RANDOM.VALUE (010,999),0),3)||'-'||LPAD (ROUND (DBMS_RANDOM.VALUE (001,999),0),3)||'-'||
+        LPAD (ROUND (DBMS_RANDOM.VALUE (001,999),0),3)  AS phone,
+        ROUND(DBMS_RANDOM.VALUE(1, 1000000),0) AS star, 
+        decode(round(dbms_random.value), 1, 'Aquarius', 'Pisces') AS starGrade, -- star에 따라 달라지고 N 개 중 단일 선택
+        decode(round(dbms_random.value), 1, '일반등급', '전문가등급') AS customerClassification,  
+        DBMS_RANDOM.STRING('P',30) AS address,
+        DBMS_RANDOM.STRING('L',5)
+        || LPAD (ROUND (DBMS_RANDOM.VALUE (0,999),0),3) || '@kopago.com' AS email,   
+        TO_CHAR( TO_DATE('20200101', 'YYYYMMDD') + ROWNUM-1, 'YYYYMMDD') AS regDate, 
+        decode(round(dbms_random.value), 1, '학생', '주부') AS job, -- N개 중 단일선택
+        ROUND(DBMS_RANDOM.VALUE(1, 2000),0) AS boardLike
+        
+FROM    dual
+
+        CONNECT BY level <= 30;    -- INSERT 행 수 (늘리면 됨)
+-- 더미 데이터 조회        
+SELECT * FROM customerDUMMY ;
+
+/*================보드 테이블 더미===========================================*/
+DROP TABLE board;
+
+CREATE TABLE board
+(boardID VARCHAR2(60) PRIMARY KEY, customerID VARCHAR2(60), language VARCHAR2(10),
+    boardType VARCHAR2(60), postingStar VARCHAR2(20), boardContent CLOB,
+    fname VARCHAR2(100), fsize VARCHAR2(50), uploadDate VARCHAR2(50),
+    boardSelect VARCHAR2(10), boardTitle VARCHAR2(100), boardCount VARCHAR2(20),
+    boardLike VARCHAR2(20), boardSecret VARCHAR2(10), boardClassification VARCHAR2(20)
+);
+
+DELETE FROM board;
+insert into board 
+    SELECT
+        ROUND(DBMS_RANDOM.VALUE(1, 10000),0) AS boardID,
+        DBMS_RANDOM.STRING('L',5)
+        || LPAD (ROUND (DBMS_RANDOM.VALUE (0,999),0),3) AS customerID,
+        decode(round(dbms_random.value), 1, 'KE', 'EK') AS language,
+        decode(round(dbms_random.value), 1, '번역요청', '자유게시판') AS boardType,
+        LPAD (ROUND (DBMS_RANDOM.VALUE (1,9999),0),4) AS postingStar,
+        LPAD (ROUND (DBMS_RANDOM.VALUE (010,999),0),3)|| LPAD (ROUND (DBMS_RANDOM.VALUE (001,999),0),3)||
+        DBMS_RANDOM.STRING('P',30) AS boardContent,
+        DBMS_RANDOM.STRING('L',5)  AS fname, 
+        LPAD (ROUND (DBMS_RANDOM.VALUE (1,9999),0),4) AS fsize, -- star에 따라 달라지므로 수정 필요
+        TO_CHAR( TO_DATE('20200101', 'YYYYMMDD') + ROWNUM-1, 'YY/MM/DD') AS uploadDate,  
+        decode(round(dbms_random.value), 1, '채택O', '채택X') AS boardSelect,
+        DBMS_RANDOM.STRING('L',10) AS boardTitle,   
+        ROUND(DBMS_RANDOM.VALUE(1, 99999),0) AS boardCount, 
+        ROUND(DBMS_RANDOM.VALUE(1, 10000),0)  AS boardLike, -- 선택하게
+        decode(round(dbms_random.value), 1, '비밀', '공개')  AS boardSecret,
+        decode(round(dbms_random.value), 1, '일반', '인기') AS boardClassification
+        
+FROM    dual
+
+        CONNECT BY level <= 100;    -- INSERT 행 수 (늘리면 됨)
+-- 조회        
+SELECT * FROM board;
+
+-- 커밋
+commit;
