@@ -1,0 +1,107 @@
+-- ****************** 2021 10 07 추가
+-- wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+DROP SEQUENCE youtubeInfo_seq;
+CREATE SEQUENCE  youtubeInfo_seq START WITH 1 INCREMENT BY 1 MAXVALUE 1000;
+
+DROP TABLE youtubeInfo;
+CREATE TABLE youtubeInfo(
+videoName  varchar2(1000),
+videoUrl varchar2(150),
+videoView varchar2(150)
+);
+-- ****************** 2021 10 07 추가
+-- wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+ALTER TABLE youtubeInfo ADD(videoSrc VARCHAR2(1000));
+
+SELECT * FROM youtubeInfo;
+COMMIT;
+-- wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+-- sequence 설계
+DROP SEQUENCE customerID_seq;
+DROP SEQUENCE alarmID_seq;
+DROP SEQUENCE textID_seq;
+DROP SEQUENCE boardID_seq;
+DROP SEQUENCE sessionID_seq;
+
+CREATE SEQUENCE customerID_seq START WITH 1 INCREMENT BY 1 MAXVALUE 10000;
+CREATE SEQUENCE alarmID_seq START WITH 1 INCREMENT BY 1 MAXVALUE 10000;
+CREATE SEQUENCE textID_seq START WITH 1 INCREMENT BY 1 MAXVALUE 10000;
+CREATE SEQUENCE boardID_seq START WITH 1 INCREMENT BY 1 MAXVALUE 10000;
+CREATE SEQUENCE sessionID_seq START WITH 1 INCREMENT BY 1 MAXVALUE 10000;
+-- wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+
+-- wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+-- customer 테이블 설계
+DROP TABLE customer;
+
+CREATE TABLE customer 
+(customerID VARCHAR2(60), passwd VARCHAR2(60), name VARCHAR2(100), gender VARCHAR2(10),
+    birthday VARCHAR2(20), phone VARCHAR2(20), star VARCHAR2(50), starGrade VARCHAR2(20),
+    customerClassification VARCHAR2(20), address CLOB, email VARCHAR2(100),
+    regDate VARCHAR2(50), job VARCHAR2(100), boardLike VARCHAR2(100));
+    
+SELECT * FROM customer;
+
+INSERT INTO customer 
+VALUES(
+customerID_seq.nextval, '1234', '이정성', '남', '941010', '010-8667-8148',
+'0', '일반', '관리자', '서울시 금천구 가산동', 'kou8148@naver.com', sysdate, '학생',
+'1'
+);
+COMMIT;
+-- wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+
+
+-- wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+-- alarm 테이블 설계
+DROP TABLE alarm;
+
+CREATE TABLE alarm
+(alarmID VARCHAR2(60), customerID VARCHAR2(60), sendCustomerID VARCHAR2(60),
+    boardID VARCHAR2(60), alarmTitle VARCHAR2(100), alarmContent CLOB,
+    alarmDate VARCHAR2(50), alarmCheck VARCHAR2(10), alarmCheckDate VARCHAR2(50));
+-- wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+
+-- wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+-- openText 테이블 설계
+DROP TABLE openText;
+
+CREATE TABLE openText
+(textID VARCHAR2(60), customerID VARCHAR2(60), customerSecret VARCHAR2(10),
+    textContent CLOB, textDate VARCHAR2(50));
+    
+SELECT * FROM openText;
+SELECT * FROM openText ORDER BY textDate;
+-- wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+
+-- wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+-- board 테이블 설계
+DROP TABLE reply;
+DROP TABLE board;
+
+CREATE TABLE board
+(boardID VARCHAR2(60), customerID VARCHAR2(60), language VARCHAR2(10),
+    boardType VARCHAR2(60), postingStar VARCHAR2(20), boardContent CLOB,
+    fname VARCHAR2(100), fsize VARCHAR2(50), uploadDate VARCHAR2(50),
+    boardSelect VARCHAR2(10), boardTitle VARCHAR2(100), boardCount VARCHAR2(20),
+    boardLike VARCHAR2(20), boardSecret VARCHAR2(10), boardClassification VARCHAR2(20));
+-- wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+
+-- wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+DROP TABLE log;
+
+CREATE TABLE log
+(sessionID VARCHAR2(60), sessionRegDate VARCHAR2(50), sessionExpireDate VARCHAR2(50),
+    visitPage VARCHAR2(10), typingCount VARCHAR2(20), customerID VARCHAR2(60));
+    
+INSERT INTO log VALUES(
+sessionID_seq.nextval,sysdate,sysdate,'0','0','1'
+);
+
+SELECT * FROM log;
+-- wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+
+COMMIT;
+-- wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+
+SELECT * FROM log;
